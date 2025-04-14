@@ -8,6 +8,9 @@ on:
     - cron: '0 15 * * *'
   workflow_dispatch:  # 수동 실행도 가능하게 설정
 
+permissions:
+  contents: write
+
 jobs:
   generate-reflection:
     runs-on: ubuntu-latest
