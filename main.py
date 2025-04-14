@@ -5,7 +5,6 @@ import openai
 import requests
 from collections import defaultdict
 
-# 환경변수 직접 사용
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 GITHUB_USERNAME = os.environ["GITHUB_USERNAME"]
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
