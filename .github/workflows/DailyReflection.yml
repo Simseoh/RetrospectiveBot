@@ -1,6 +1,8 @@
 name: Daily GitHub Commit Reflection
 
 on:
+  push:
+    branches: [ "master" ]
   schedule:
     # 매일 밤 12시(UTC 기준 15:00)에 실행
     - cron: '0 15 * * *'
