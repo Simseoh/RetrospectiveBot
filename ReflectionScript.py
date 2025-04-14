@@ -123,7 +123,7 @@ def save_to_notion(reflection, reflection_date):
         new_page = {
             "parent": {"database_id": NOTION_DATABASE_ID},
             "properties": {
-                "제목": {
+                "NAME": {
                     "title": [
                         {
                             "text": {
@@ -132,7 +132,7 @@ def save_to_notion(reflection, reflection_date):
                         }
                     ]
                 },
-                "날짜": {
+                "DATE": {
                     "date": {
                         "start": reflection_date.strftime('%Y-%m-%d')
                     }
