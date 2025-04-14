@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN_SECRET }}
-      GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+      GITHUB_TOKEN: ${{ secrets.HUB_TOKEN_SECRET }}
+      GITHUB_USERNAME: ${{ secrets.HUB_USERNAME }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
       NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
