@@ -130,8 +130,13 @@ def save_to_notion(reflection, reflection_date, commits_by_org_repo):
                     repo_names.append(f"{org}/{repo_name}")
                     all_commit_messages.extend(commit.commit.message.split('\n')[0] for commit in commits)
 
-        repo_list_str = ', '.join(repo_names)
-        commit_summary_str = '\n'.join(all_commit_messages)
+        repo_list_str = ', '.join(repo_names) if repo_names else "없음"
+        commit_summary_str = '\n'.join(all_commit_messages) if all_commit_messages else "없음"
+
+        summary_str = "이 날 총 {}개의 커밋. 주요 내용:\n{}".format(
+            len(all_commit_messages),
+            "\n".join(f"- {msg}" for msg in all_commit_messages[:5]) if all_commit_messages else "- 활동 없음"
+        )
 
         new_page = {
             "parent": {"database_id": NOTION_DATABASE_ID},
@@ -153,6 +158,7 @@ def save_to_notion(reflection, reflection_date, commits_by_org_repo):
                 "Repository": {
                     "rich_text": [
                         {
+                            "type": "text",
                             "text": {
                                 "content": repo_list_str
                             }
@@ -162,11 +168,9 @@ def save_to_notion(reflection, reflection_date, commits_by_org_repo):
                 "Summary": {
                     "rich_text": [
                         {
+                            "type": "text",
                             "text": {
-                                "content": "이 날 총 {}개의 커밋. 주요 내용:\n{}".format(
-                                    len(all_commit_messages),
-                                    "\n".join(f"- {msg}" for msg in all_commit_messages[:5])  # 상위 5개 요약
-                                )
+                                "content": summary_str
                             }
                         }
                     ]
@@ -174,6 +178,7 @@ def save_to_notion(reflection, reflection_date, commits_by_org_repo):
                 "Commits": {
                     "rich_text": [
                         {
+                            "type": "text",
                             "text": {
                                 "content": commit_summary_str
                             }
