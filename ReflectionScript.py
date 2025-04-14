@@ -114,16 +114,29 @@ def generate_reflection(commits_by_org_repo, reflection_date):
     return reflection
 
 
-def save_to_notion(reflection, reflection_date):
+def save_to_notion(reflection, reflection_date, commits_by_org_repo):
     try:
         notion = Client(auth=NOTION_TOKEN)
 
         title = f"{reflection_date.strftime('%Y-%m-%d')} GitHub 활동 회고"
 
+        # Repository 이름 목록 수집
+        repo_names = []
+        all_commit_messages = []
+
+        for org, repos in commits_by_org_repo.items():
+            for repo_name, commits in repos.items():
+                if commits:
+                    repo_names.append(f"{org}/{repo_name}")
+                    all_commit_messages.extend(commit.commit.message.split('\n')[0] for commit in commits)
+
+        repo_list_str = ', '.join(repo_names)
+        commit_summary_str = '\n'.join(all_commit_messages)
+
         new_page = {
             "parent": {"database_id": NOTION_DATABASE_ID},
             "properties": {
-                "NAME": {
+                "Name": {
                     "title": [
                         {
                             "text": {
@@ -132,10 +145,40 @@ def save_to_notion(reflection, reflection_date):
                         }
                     ]
                 },
-                "DATE": {
+                "Date": {
                     "date": {
                         "start": reflection_date.strftime('%Y-%m-%d')
                     }
+                },
+                "Repository": {
+                    "rich_text": [
+                        {
+                            "text": {
+                                "content": repo_list_str
+                            }
+                        }
+                    ]
+                },
+                "Summary": {
+                    "rich_text": [
+                        {
+                            "text": {
+                                "content": "이 날 총 {}개의 커밋. 주요 내용:\n{}".format(
+                                    len(all_commit_messages),
+                                    "\n".join(f"- {msg}" for msg in all_commit_messages[:5])  # 상위 5개 요약
+                                )
+                            }
+                        }
+                    ]
+                },
+                "Commits": {
+                    "rich_text": [
+                        {
+                            "text": {
+                                "content": commit_summary_str
+                            }
+                        }
+                    ]
                 }
             },
             "children": [
@@ -147,7 +190,7 @@ def save_to_notion(reflection, reflection_date):
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": "GitHub 활동 회고록이 자동으로 생성되었습니다."
+                                    "content": "GitHub 활동 회고 상세 내용입니다."
                                 }
                             }
                         ]
@@ -200,7 +243,7 @@ def main():
         filepath = save_reflection(reflection, reflection_date)
 
         if NOTION_TOKEN and NOTION_DATABASE_ID:
-            notion_url = save_to_notion(reflection, reflection_date)
+            notion_url = save_to_notion(reflection, reflection_date, commits_by_org_repo)
             print(f"회고록이 Notion에 저장되었습니다: {notion_url}")
 
     except Exception as e:
