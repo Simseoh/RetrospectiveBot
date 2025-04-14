@@ -4,24 +4,20 @@ from github import Github
 from collections import defaultdict
 from notion_client import Client
 
-# GitHub 토큰 설정
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 if not GITHUB_TOKEN:
     raise ValueError("GitHub 토큰이 필요합니다. GitHub Secret에 PERSONAL_ACCESS_TOKEN을 설정하세요.")
 
-# GitHub 사용자 이름 설정
 GITHUB_USERNAME = os.environ.get("GITHUB_USERNAME")
 if not GITHUB_USERNAME:
     raise ValueError("GitHub 사용자 이름이 필요합니다. 환경 변수 GITHUB_USERNAME을 설정하세요.")
 
-# Notion API 토큰과 데이터베이스 ID 설정
 NOTION_TOKEN = os.environ.get("NOTION_TOKEN")
 NOTION_DATABASE_ID = os.environ.get("NOTION_DATABASE_ID")
 
 if not NOTION_TOKEN or not NOTION_DATABASE_ID:
     raise ValueError("Notion API 토큰과 데이터베이스 ID가 필요합니다.")
 
-# 회고록 저장 경로 설정
 REFLECTION_DIR = "./reflections"
 os.makedirs(REFLECTION_DIR, exist_ok=True)
 

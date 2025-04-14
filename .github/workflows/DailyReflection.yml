@@ -4,9 +4,8 @@ on:
   push:
     branches: [ "master" ]
   schedule:
-    # 매일 밤 12시(UTC 기준 15:00)에 실행
     - cron: '0 15 * * *'
-  workflow_dispatch:  # 수동 실행도 가능하게 설정
+  workflow_dispatch:
 
 permissions:
   contents: write
