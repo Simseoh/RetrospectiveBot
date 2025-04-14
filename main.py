@@ -1,9 +1,9 @@
 import os
 from github import Github
 from datetime import datetime, timedelta
-import openai
 import requests
 from collections import defaultdict
+from openai import OpenAI  # ✅ 여기 추가
 
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 GITHUB_USERNAME = os.environ["GITHUB_USERNAME"]
@@ -11,7 +11,7 @@ OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 NOTION_TOKEN = os.environ["NOTION_TOKEN"]
 NOTION_DB_ID = os.environ["NOTION_DATABASE_ID"]
 
-openai.api_key = OPENAI_API_KEY
+client = OpenAI(api_key=OPENAI_API_KEY)  # ✅ 여기 변경
 
 
 def get_commits_grouped_by_repo(token, username, since_days_ago=1):
@@ -45,13 +45,13 @@ def generate_repo_based_retrospective(repo_commits):
 
     prompt = f"""다음은 내가 오늘 작성한 GitHub 커밋 메시지들이야. 레포지토리별로 정리되어 있어:\n\n{formatted}\n이 내용을 바탕으로 각 레포에서 한 일, 느낀 점, 개선점 등을 포함한 회고록을 써줘. 레포별로 항목을 나눠서 정리해줘."""
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(  # ✅ 여기 변경
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.7
     )
 
-    return response['choices'][0]['message']['content']
+    return response.choices[0].message.content  # ✅ 여기도 수정
 
 
 def upload_to_notion(notion_token, database_id, title, content):
